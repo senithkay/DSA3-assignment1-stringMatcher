@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class searchResults{
+class search{
     vector<int> matched_lines;
     vector<int> :: iterator itr;
     int bad_c_table[256];
@@ -15,7 +15,7 @@ class searchResults{
     string pattern;
     string text;
     
-    void create_bad_character(){ // rmo:- right most occurrences
+    void create_bad_character(){ 
         int i;
         for (i = 0; i < 256; i++)
             bad_c_table[i] = p_length;
@@ -54,7 +54,7 @@ class searchResults{
             }
         }   
 
-        searchResults(string p, string t){
+        search(string p, string t){
             pattern = p;
             text = t;
             p_length = p.length();
@@ -120,6 +120,6 @@ int main(){
     f1<<"haha";
     f1.close();
 
-    searchResults s1("a", "f1255 senith uthsara karunarathne");
+    search s1("a", "f1255 senith uthsara karunarathne");
     s1.matchedlines();
 }
