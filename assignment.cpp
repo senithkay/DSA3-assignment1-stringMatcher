@@ -7,6 +7,7 @@
 using namespace std;
 
 class search{
+    bool isProcessed = false;
     vector<int> matched_lines;
     vector<int> :: iterator itr;
     int bad_c_table[256];
@@ -26,12 +27,17 @@ class search{
 
     public:
 
-        void matchedlines(){
+        void printMatchedlines(){
+            if(!isProcessed){
+                boyer_moore();
+                isProcessed = true;
+            }
             for(itr=matched_lines.begin();itr<matched_lines.end();itr++)
                 cout<<*itr<<endl;
         }
         
         int boyer_moore(){
+            cout<<"hi";
             int shift_value = 0;
             int j;
             while (shift_value <= (t_length - p_length))
@@ -60,7 +66,14 @@ class search{
             p_length = p.length();
             t_length = t.length();
             create_bad_character();
-            boyer_moore();
+        }
+
+        vector<int> results(){
+            if(!isProcessed){
+                boyer_moore();
+                isProcessed = true;
+            }
+            return matched_lines;
         }
 };
 
@@ -121,5 +134,10 @@ int main(){
     f1.close();
 
     search s1("a", "f1255 senith uthsara karunarathne");
-    s1.matchedlines();
+    s1.printMatchedlines();
+    cout<<"++++++++++++++++";
+    vector<int> lines = s1.results();
+    vector<int>::iterator i;
+    for (i=lines.begin();i<lines.end();i++)
+        cout<<*i<<endl;
 }
