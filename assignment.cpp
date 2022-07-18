@@ -17,7 +17,7 @@ class searchResults{
     void create_bad_character(){ // rmo:- right most occurrences
         int i;
         for (i = 0; i < 256; i++)
-            bad_c_table[i] = 6;
+            bad_c_table[i] = p_length;
 
         for (i = p_length - 2; i >= 0; i--)
             bad_c_table[int(pattern[i])] = p_length - i - 1;
