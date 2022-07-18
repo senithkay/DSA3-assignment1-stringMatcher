@@ -8,6 +8,7 @@ using namespace std;
 
 class searchResults{
     vector<int> matched_lines;
+    vector<int> :: iterator itr;
     int bad_c_table[256];
     int p_length;
     int t_length;
@@ -24,6 +25,11 @@ class searchResults{
     }
 
     public:
+
+        void matchedlines(){
+            for(itr=matched_lines.begin();itr<matched_lines.end();itr++)
+                cout<<*itr<<endl;
+        }
         
         int boyer_moore(){
             int shift_value = 0;
@@ -35,7 +41,7 @@ class searchResults{
                         break;
                 }
                 if (j < 0){
-                    cout << "Found at " << shift_value + 1 << endl;
+                    matched_lines.push_back(shift_value+1);
                     if (shift_value + p_length < t_length){
                         shift_value += bad_c_table[int(text[j + p_length + 1])];
                     }
@@ -46,8 +52,8 @@ class searchResults{
                     shift_value += bad_c_table[int(text[shift_value + (p_length - 1)])];
                 }
             }
-}
-        /***********/
+        }   
+
         searchResults(string p, string t){
             pattern = p;
             text = t;
@@ -120,6 +126,6 @@ int main(){
     f1<<"haha";
     f1.close();
 
-    searchResults s1("uthsara", "f1255 senith uthsara karunarathne");
-    
+    searchResults s1("a", "f1255 senith uthsara karunarathne");
+    s1.matchedlines();
 }
