@@ -108,12 +108,6 @@ class textFile {
             return newFile;
         }
 
-        
-
-        vector<int> & search(){
-            vector<int> mathed_lines;
-
-        }
 };
 
 
