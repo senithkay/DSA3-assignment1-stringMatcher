@@ -19,8 +19,13 @@ class textMatcher{
         for (i = 0; i < 256; i++)
             bad_c_table[i] = p_length;
 
-        for (i =0; i<p_length - 1; i++)
-            bad_c_table[int(pattern[i])] = p_length - i - 1;
+        for (i =0; i<p_length - 1; i++){
+            if(isupper(pattern[i]))
+                bad_c_table[int(pattern[i])+32] = p_length - i - 1;
+            else
+                bad_c_table[int(pattern[i])] = p_length - i - 1;
+        }
+            
     }
 
     public:
@@ -29,21 +34,39 @@ class textMatcher{
             int shift_value = 0;
             int j;
             while (shift_value <= (t_length - p_length))
-            {
+            {   
                 for (j = p_length - 1; j >= 0; j--){
-                    if (pattern[j] != text[shift_value + j])
+                    if(isupper(pattern[j]) && !isupper(text[shift_value + j])){
+                        if (int(pattern[j]) +32 != int(text[shift_value + j]))
+                            break;        
+                    }
+
+                    else if(!isupper(pattern[j]) && isupper(text[shift_value + j])){
+                        if (int(pattern[j]) != int(text[shift_value + j])+32)
+                            break;
+                    }
+                    else{
+                        if (pattern[j] != text[shift_value + j])
                         break;
+                    }
                 }
                 if (j < 0){
                     return true;
                     if (shift_value + p_length < t_length){
-                        shift_value += bad_c_table[int(text[j + p_length + 1])];
+                        if(isupper(text[j + p_length + 1]))
+                            shift_value += bad_c_table[int(text[j + p_length + 1])+32];
+                        else
+                            shift_value += bad_c_table[int(text[shift_value+p_length])];
+                
                     }
                     else
                         shift_value++;
                 }
                 else{
-                    shift_value += bad_c_table[int(text[shift_value + (p_length - 1)])];
+                    if(isupper(text[shift_value + (p_length - 1)]))
+                        shift_value += bad_c_table[int(text[shift_value + (p_length - 1)])+32];
+                    else
+                        shift_value += bad_c_table[int(text[shift_value + (p_length - 1)])];
                 }
             }
             return false;
@@ -130,14 +153,13 @@ class textFile {
 int main(){
     
     textFile t1("modules.txt");
-    t1.print_line(10);
+    t1.print_line(3);
     fstream f1 = t1.file_slice("module_slice_10",10);
     f1<<"haha";
     f1.close();
 
 
-
     cout<<"search results:"<<endl;
-    t1.searchLines("Chinese");
+    t1.searchLines("he entry");
         
 }
