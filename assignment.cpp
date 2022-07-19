@@ -6,10 +6,8 @@
 
 using namespace std;
 
-class search{
+class textMatcher{
     bool isProcessed = false;
-    vector<int> matched_lines;
-    vector<int> :: iterator itr;
     int bad_c_table[256];
     int p_length;
     int t_length;
@@ -26,18 +24,8 @@ class search{
     }
 
     public:
-
-        void printMatchedlines(){
-            if(!isProcessed){
-                boyer_moore();
-                isProcessed = true;
-            }
-            for(itr=matched_lines.begin();itr<matched_lines.end();itr++)
-                cout<<*itr<<endl;
-        }
         
-        int boyer_moore(){
-            cout<<"hi";
+        bool boyer_moore(){
             int shift_value = 0;
             int j;
             while (shift_value <= (t_length - p_length))
@@ -47,7 +35,7 @@ class search{
                         break;
                 }
                 if (j < 0){
-                    matched_lines.push_back(shift_value+1);
+                    return true;
                     if (shift_value + p_length < t_length){
                         shift_value += bad_c_table[int(text[j + p_length + 1])];
                     }
@@ -58,22 +46,19 @@ class search{
                     shift_value += bad_c_table[int(text[shift_value + (p_length - 1)])];
                 }
             }
+            return false;
         }   
 
-        search(string p, string t){
+        textMatcher(string p){
             pattern = p;
-            text = t;
             p_length = p.length();
-            t_length = t.length();
             create_bad_character();
         }
 
-        vector<int> results(){
-            if(!isProcessed){
-                boyer_moore();
-                isProcessed = true;
-            }
-            return matched_lines;
+        bool searchLine(string t){
+            text = t;
+            t_length = t.length();
+            return boyer_moore();
         }
 };
 
@@ -82,10 +67,11 @@ class textFile {
     vector<string> lines;
     int line_count; // stores line count.
     string line; // stores a specific line temporarily.
-
+    int number_of_results;
+    vector<int> matched_lines;
 
     public:
-        textFile(string file_to_open = "", string string_to_search = ""){
+        textFile(string file_to_open = ""){
             fstream file;
             line_count=0;
             file.open(file_to_open, ios::in | ios::out);
@@ -121,6 +107,22 @@ class textFile {
             return newFile;
         }
 
+        //seach for matched lines
+
+        void searchLines(string pattern){
+            int line_number;
+            textMatcher matcher1(pattern);
+            number_of_results = 0;
+            for(line_number=0;line_number<line_count;line_number++){
+                if(matcher1.searchLine(lines[line_number])){
+                    matched_lines.push_back(line_number+1);
+                    cout<<lines[line_number]<<endl;
+                    number_of_results++;
+                }
+                
+            }
+            cout<<"Number of results: "<<number_of_results<<endl;
+        }
 };
 
 
@@ -133,11 +135,9 @@ int main(){
     f1<<"haha";
     f1.close();
 
-    search s1("a", "f1255 senith uthsara karunarathne");
-    s1.printMatchedlines();
-    cout<<"++++++++++++++++";
-    vector<int> lines = s1.results();
-    vector<int>::iterator i;
-    for (i=lines.begin();i<lines.end();i++)
-        cout<<*i<<endl;
+
+
+    cout<<"search results:"<<endl;
+    t1.searchLines("chinese");
+        
 }
