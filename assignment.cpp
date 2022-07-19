@@ -19,7 +19,7 @@ class textMatcher{
         for (i = 0; i < 256; i++)
             bad_c_table[i] = p_length;
 
-        for (i = p_length - 2; i >= 0; i--)
+        for (i =0; i<p_length - 1; i++)
             bad_c_table[int(pattern[i])] = p_length - i - 1;
     }
 
