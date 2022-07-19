@@ -13,6 +13,8 @@ class textMatcher{
     int t_length;
     string pattern;
     string text;
+    int number_of_matches;
+    vector<int> matched_lines;
     
     void create_bad_character(){ 
         int i;
@@ -73,6 +75,7 @@ class textMatcher{
         }   
 
         textMatcher(string p){
+            number_of_matches = 0;
             pattern = p;
             p_length = p.length();
             create_bad_character();
@@ -83,6 +86,18 @@ class textMatcher{
             t_length = t.length();
             return boyer_moore();
         }
+
+        int getNumOfmatches(){
+            return number_of_matches;
+        }
+
+        void setNumOfMatches(int num){
+            number_of_matches = num;
+        }
+
+        void setMatchedLines(int ln){
+            matched_lines.push_back(ln);
+        }
 };
 
 
@@ -91,7 +106,6 @@ class textFile {
     int line_count; // stores line count.
     string line; // stores a specific line temporarily.
     int number_of_results;
-    vector<int> matched_lines;
 
     public:
         textFile(string file_to_open = ""){
@@ -132,19 +146,19 @@ class textFile {
 
         //seach for matched lines
 
-        void searchLines(string pattern){
+        textMatcher searchLines(string pattern){
             int line_number;
             textMatcher matcher1(pattern);
             number_of_results = 0;
             for(line_number=0;line_number<line_count;line_number++){
                 if(matcher1.searchLine(lines[line_number])){
-                    matched_lines.push_back(line_number+1);
-                    cout<<lines[line_number]<<endl;
+                    matcher1.setMatchedLines(line_number+1);
                     number_of_results++;
                 }
                 
             }
-            cout<<"Number of results: "<<number_of_results<<endl;
+            matcher1.setNumOfMatches(number_of_results);
+            return matcher1;
         }
 };
 
@@ -160,6 +174,6 @@ int main(){
 
 
     cout<<"search results:"<<endl;
-    t1.searchLines("he entry");
-        
+    textMatcher res1 = t1.searchLines("he entry");
+    cout<<res1.getNumOfmatches();
 }
