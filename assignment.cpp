@@ -6,6 +6,47 @@
 
 using namespace std;
 
+
+class result{
+    vector< vector<string> > results;
+
+    void printStringVector(vector<string> vec, int startingPos, int endPos){
+        vector<string>::iterator i;
+        for (i=vec.begin()+startingPos;i<vec.begin()+ endPos+1;i++)
+            cout<<*i<<" ";
+        cout<<endl;
+    }
+
+    void printStringVector(vector<string> vec, int startingPos){
+        vector<string>::iterator i;
+        for (i=vec.begin()+startingPos;i<vec.end();i++)
+            cout<<*i<<" ";
+        cout<<endl;
+    }
+
+    public:
+
+        result(vector< vector<string> > &res): results(res){}
+
+        void moduleCode(){
+            vector< vector<string> > :: iterator i;
+            for(i=results.begin();i<results.end();i++)
+                printStringVector(*i,0,0);
+        }
+
+        void moduledescriptor(){
+            vector< vector<string> > :: iterator i;
+            for(i=results.begin();i<results.end();i++)
+                printStringVector(*i,0);
+        }
+
+
+
+};
+
+
+
+
 class textMatcher{
     bool isProcessed = false;
     int bad_c_table[256];
@@ -100,6 +141,39 @@ class textMatcher{
             matched_lines.push_back(ln);
         }
 
+        //splits a line of strings into words and returns a vector containing them
+        vector<string> split(string str){
+            vector<string> words;
+            string res = "";;
+            if(str == "")
+                return words;
+            for (char i: str){
+        
+                if (i==' '){
+                    words.push_back(res);
+                res = "";
+                }
+                else
+                    res += i;
+            }
+            words.push_back(res);
+            vector<string>::iterator i;
+        }
+
+        void printStringVector(vector<string> vec, int startingPos, int endPos){
+            vector<string>::iterator i;
+            for (i=vec.begin()+startingPos;i<vec.begin()+ endPos+1;i++)
+                cout<<*i<<" ";
+            cout<<endl;
+        }
+
+        void printStringVector(vector<string> vec, int startingPos){
+            vector<string>::iterator i;
+            for (i=vec.begin()+startingPos;i<vec.end();i++)
+                    cout<<*i<<" ";
+            cout<<endl;
+    }
+
         void printMatchedLines(string filter){
             if (filter=="no filter"){
                 vector<string>:: iterator i=textLines.begin();
@@ -109,7 +183,33 @@ class textMatcher{
                 }
             }
             else if (filter == "Module code"){
+                vector< vector<string> > results;
+                vector<string>:: iterator i=textLines.begin();
+                vector<int>:: iterator j;
+                for(j= matched_lines.begin();j<matched_lines.end();j++){
+                    results.push_back(split(*(i+*j-1)));
+                }
+               
+                vector< vector<string> > :: iterator k;
+                for(k=results.begin();k<results.end();k++)
+                    printStringVector(*k,0,0);
+        
+                
+            }
 
+            else if (filter == "Module name"){
+                vector< vector<string> > results;
+                vector<string>:: iterator i=textLines.begin();
+                vector<int>:: iterator j;
+                for(j= matched_lines.begin();j<matched_lines.end();j++){
+                    results.push_back(split(*(i+*j-1)));
+                }
+               
+                vector< vector<string> > :: iterator k;
+                for(k=results.begin();k<results.end();k++)
+                    printStringVector(*k,1);
+        
+                
             }
         }
         
@@ -178,22 +278,22 @@ class textFile {
 
         //splits a line of strings into words and returns a vector containing them
         vector<string> split(string str){
-        vector<string> words;
-        string res = "";;
-        if(str == "")
-            return words;
-        for (char i: str){
+            vector<string> words;
+            string res = "";;
+            if(str == "")
+                return words;
+            for (char i: str){
         
-            if (i==' '){
-                words.push_back(res);
-            res = "";
+                if (i==' '){
+                    words.push_back(res);
+                res = "";
+                }
+                else
+                    res += i;
+            }
+            words.push_back(res);
+            vector<string>::iterator i;
         }
-        else
-            res += i;
-    }
-    words.push_back(res);
-    vector<string>::iterator i;
-}
 
 
 };
@@ -208,5 +308,5 @@ int main(){
 
     textMatcher res1 = t1.searchLines("he entry");
     cout<<res1.getNumOfmatches()<<endl;
-    res1.printMatchedLines("no filter");
+    res1.printMatchedLines("Module name");
 }
