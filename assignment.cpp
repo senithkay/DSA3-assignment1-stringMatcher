@@ -6,45 +6,6 @@
 
 using namespace std;
 
-class result{
-    vector< vector<string> > results;
-
-    void printStringVector(vector<string> vec, int startingPos, int endPos){
-        vector<string>::iterator i;
-        for (i=vec.begin()+startingPos;i<vec.begin()+ endPos+1;i++)
-            cout<<*i<<" ";
-        cout<<endl;
-    }
-
-    void printStringVector(vector<string> vec, int startingPos){
-        vector<string>::iterator i;
-        for (i=vec.begin()+startingPos;i<vec.end();i++)
-            cout<<*i<<" ";
-        cout<<endl;
-    }
-
-    public:
-
-        result(vector< vector<string> > &res): results(res){}
-
-        void moduleCode(){
-            vector< vector<string> > :: iterator i;
-            for(i=results.begin();i<results.end();i++)
-                printStringVector(*i,0,0);
-        }
-
-        void moduledescriptor(){
-            vector< vector<string> > :: iterator i;
-            for(i=results.begin();i<results.end();i++)
-                printStringVector(*i,0);
-        }
-
-
-
-};
-
-
-
 class textMatcher{
     bool isProcessed = false;
     int bad_c_table[256];
@@ -55,7 +16,6 @@ class textMatcher{
     int number_of_matches;
     vector<int> matched_lines;
     vector<string> &textLines;
-    
     
     void create_bad_character(){ 
         int i;
@@ -126,7 +86,6 @@ class textMatcher{
             text = t;
             t_length = t.length();
             return boyer_moore();
-            
         }
 
         int getNumOfmatches(){
@@ -141,15 +100,19 @@ class textMatcher{
             matched_lines.push_back(ln);
         }
 
-        void printMatchedLines(){
-            vector<string>:: iterator i=textLines.begin();
-            vector<int>:: iterator j;
-            for(j= matched_lines.begin();j<matched_lines.end();j++){
-                cout<<*(i+*j-1)<<endl;
+        void printMatchedLines(string filter){
+            if (filter=="no filter"){
+                vector<string>:: iterator i=textLines.begin();
+                vector<int>:: iterator j;
+                for(j= matched_lines.begin();j<matched_lines.end();j++){
+                    cout<<*(i+*j-1)<<endl;
+                }
             }
+            else if (filter == "Module code"){
 
+            }
         }
-
+        
 };
 
 
@@ -158,7 +121,6 @@ class textFile {
     int line_count; // stores line count.
     string line; // stores a specific line temporarily.
     int number_of_results;
-
 
     public:
         textFile(string file_to_open = ""){
@@ -200,14 +162,12 @@ class textFile {
         //seach for matched lines
 
         textMatcher searchLines(string pattern){
-            int line_index;
+            int line_number;
             textMatcher matcher1(pattern, lines);
             number_of_results = 0;
-            vector<vector<string>> toRes;
-            for(line_index=0;line_index<line_count;line_index++){
-                if(matcher1.searchLine(lines[line_index])){
-                    matcher1.setMatchedLines(line_index+1);
-                    toRes.push_back(split_lines(line_index+1));
+            for(line_number=0;line_number<line_count;line_number++){
+                if(matcher1.searchLine(lines[line_number])){
+                    matcher1.setMatchedLines(line_number+1);
                     number_of_results++;
                 }
                 
@@ -217,9 +177,8 @@ class textFile {
         }
 
         //splits a line of strings into words and returns a vector containing them
-        vector<string> split_lines(int line_number){
+        vector<string> split(string str){
         vector<string> words;
-        string str = lines[line_number-1];
         string res = "";;
         if(str == "")
             return words;
@@ -227,14 +186,14 @@ class textFile {
         
             if (i==' '){
                 words.push_back(res);
-                res = "";
-            }
-            else
-                res += i;
+            res = "";
         }
-        words.push_back(res);
-        vector<string>::iterator i;
-        }
+        else
+            res += i;
+    }
+    words.push_back(res);
+    vector<string>::iterator i;
+}
 
 
 };
@@ -249,11 +208,5 @@ int main(){
 
     textMatcher res1 = t1.searchLines("he entry");
     cout<<res1.getNumOfmatches()<<endl;
-    res1.printMatchedLines();
-
-    cout<<"split"<<endl;
-    vector<string> sp_lines = t1.split_lines(10);
-    vector<string>:: iterator i;
-    for(i=sp_lines.begin();i<sp_lines.end();i++)
-        cout<<*i<<" | ";
+    res1.printMatchedLines("no filter");
 }
