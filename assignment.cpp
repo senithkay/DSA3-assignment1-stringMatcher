@@ -170,6 +170,28 @@ class textFile {
             matcher1.setNumOfMatches(number_of_results);
             return matcher1;
         }
+
+        //splits a line of strings into words and returns a vector containing them
+        vector<string> split_lines(int line_number){
+        vector<string> words;
+        string str = lines[line_number-1];
+        string res = "";;
+        if(str == "")
+            return words;
+        for (char i: str){
+        
+            if (i==' '){
+                words.push_back(res);
+                res = "";
+            }
+            else
+                res += i;
+        }
+        words.push_back(res);
+        vector<string>::iterator i;
+        }
+
+
 };
 
 
@@ -183,4 +205,10 @@ int main(){
     textMatcher res1 = t1.searchLines("he entry");
     cout<<res1.getNumOfmatches()<<endl;
     res1.printMatchedLines();
+
+    cout<<"split"<<endl;
+    vector<string> sp_lines = t1.split_lines(10);
+    vector<string>:: iterator i;
+    for(i=sp_lines.begin();i<sp_lines.end();i++)
+        cout<<*i<<" | ";
 }
