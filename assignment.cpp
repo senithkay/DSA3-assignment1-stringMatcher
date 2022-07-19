@@ -138,6 +138,6 @@ int main(){
 
 
     cout<<"search results:"<<endl;
-    t1.searchLines("chinese");
+    t1.searchLines("Chinese");
         
 }
