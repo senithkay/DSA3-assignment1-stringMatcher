@@ -15,6 +15,7 @@ class textMatcher{
     string text;
     int number_of_matches;
     vector<int> matched_lines;
+    vector<string> &textLines;
     
     void create_bad_character(){ 
         int i;
@@ -74,7 +75,7 @@ class textMatcher{
             return false;
         }   
 
-        textMatcher(string p){
+        textMatcher(string p, vector<string> &lines):textLines(lines) {
             number_of_matches = 0;
             pattern = p;
             p_length = p.length();
@@ -97,6 +98,15 @@ class textMatcher{
 
         void setMatchedLines(int ln){
             matched_lines.push_back(ln);
+        }
+
+        void printMatchedLines(){
+            vector<string>:: iterator i=textLines.begin();
+            vector<int>:: iterator j;
+            for(j= matched_lines.begin();j<matched_lines.end();j++){
+                cout<<*(i+*j-1)<<endl;
+            }
+
         }
 };
 
@@ -148,7 +158,7 @@ class textFile {
 
         textMatcher searchLines(string pattern){
             int line_number;
-            textMatcher matcher1(pattern);
+            textMatcher matcher1(pattern, lines);
             number_of_results = 0;
             for(line_number=0;line_number<line_count;line_number++){
                 if(matcher1.searchLine(lines[line_number])){
@@ -167,13 +177,10 @@ class textFile {
 int main(){
     
     textFile t1("modules.txt");
-    t1.print_line(3);
-    fstream f1 = t1.file_slice("module_slice_10",10);
-    f1<<"haha";
-    f1.close();
 
 
-    cout<<"search results:"<<endl;
+
     textMatcher res1 = t1.searchLines("he entry");
-    cout<<res1.getNumOfmatches();
+    cout<<res1.getNumOfmatches()<<endl;
+    res1.printMatchedLines();
 }
