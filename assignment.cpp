@@ -7,44 +7,6 @@
 using namespace std;
 
 
-class result{
-    vector< vector<string> > results;
-
-    void printStringVector(vector<string> vec, int startingPos, int endPos){
-        vector<string>::iterator i;
-        for (i=vec.begin()+startingPos;i<vec.begin()+ endPos+1;i++)
-            cout<<*i<<" ";
-        cout<<endl;
-    }
-
-    void printStringVector(vector<string> vec, int startingPos){
-        vector<string>::iterator i;
-        for (i=vec.begin()+startingPos;i<vec.end();i++)
-            cout<<*i<<" ";
-        cout<<endl;
-    }
-
-    public:
-
-        result(vector< vector<string> > &res): results(res){}
-
-        void moduleCode(){
-            vector< vector<string> > :: iterator i;
-            for(i=results.begin();i<results.end();i++)
-                printStringVector(*i,0,0);
-        }
-
-        void moduledescriptor(){
-            vector< vector<string> > :: iterator i;
-            for(i=results.begin();i<results.end();i++)
-                printStringVector(*i,0);
-        }
-
-
-
-};
-
-
 
 
 class textMatcher{
