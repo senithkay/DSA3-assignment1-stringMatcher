@@ -24,26 +24,24 @@ class textMatcher{
 
     public:
         
-        bool boyer_moore();
+        bool boyer_moore(); //boyer moore horsepool algorithm
 
         textMatcher(string p, vector<string> &lines);
+                                           
+                                           // drives the boyer_moore() function
+        bool searchMatchingLine(string t);//check whether the given line contains the pattern or not.
+                                        
 
-        bool searchMatchingLine(string t);
+        int  getNumOfmatches();//returns number of matching lines
 
-        int  getNumOfmatches();
+        void setMatchedLines(int ln);
+        vector<string> split(string str);//splits a line of strings into words and returns a vector containing them
 
-        void setMatchedLines(int ln){
-            matched_lines.push_back(ln);
-        }
-
-        //splits a line of strings into words and returns a vector containing them
-        vector<string> split(string str);
-
-        void printStringVector(vector<string> vec, int startingPos, int endPos);
-
-        void printStringVector(vector<string> vec, int startingPos);
-
-        void printMatchedLines(int filter);
+        void printStringVector(vector<string> vec, int startingPos, int endPos);//prints a string vector when from a starting point 
+                                                                                //to a ending point
+        void printStringVector(vector<string> vec, int startingPos);//prints a string vector when from a starting point
+                                                                    //to the end of the vector.
+        void printMatchedLines(int filter);//matched lines and filter out resultts.
 };
 
 
@@ -51,28 +49,14 @@ class textFile {
     vector<string> lines;
     int line_count; // stores line count.
     string line; // stores a specific line temporarily.
-    int number_of_results;
+
 
     public:
         textFile(string file_to_open);
-        //prints the line when the line number is given as a parameter
-
-
-        void print_line(int line_number);
-
-
-
-        //slice the file after a specific line number and name it(returns the opened file)
-        fstream file_slice(string file_name,int line_number);
-
-        //seach for matched lines
-
-        textMatcher searchLines(string pattern);
-
-        //splits a line of strings into words and print them in a line
-        void split(int line_number);
-
-
+        void print_line(int line_number);//prints the line when the line number is given as a parameter
+        void file_slice(string file_name,int line_number);//slice the file after a specific line number and name it(returns the opened file)
+        textMatcher searchLines(string pattern);//seach for matched lines
+        void split(int line_number); //splits a line of strings into words and print them in a line
 };
 
 
@@ -94,6 +78,8 @@ int main(){
         cout<<"5. Exit."<<endl;
         cout<<"Your choice: ";
         cin>>command;
+        if(1>command || 5<command)
+            cout<<"ERROR: "<<command<<" is not a valid input"<<endl;
         switch (command) {
         case 1:{
             cout<<endl<<endl;
@@ -135,6 +121,10 @@ int main(){
             cin>>subCommand;
             t1.split(subCommand);
             break;
+        }
+
+        case 5:{
+
         }
         
 
@@ -298,6 +288,10 @@ void textMatcher:: printMatchedLines(int filter){
             }
 }
 
+void  textMatcher:: setMatchedLines(int ln){
+            matched_lines.push_back(ln);
+}
+
 /******** textFile class methods ********/
 textFile:: textFile(string file_to_open = ""){
             fstream file;
@@ -320,38 +314,37 @@ void textFile:: print_line(int line_number){
             cout<< lines[line_number-1] <<endl;
 }
 
-fstream textFile:: file_slice(string file_name,int line_number){
+void textFile:: file_slice(string file_name,int line_number){
             if(line_number<1 | line_number>line_count){
                 cout<<"ERROR: Line number out of range. Duplicating the original file."<<endl;
                 vector<string>:: iterator line_index;
                 fstream newFile;
                 newFile.open(file_name, ios::out);
                 if(!newFile)
-                    return newFile;
+                    return;
 
                 for(line_index=lines.begin();line_index<lines.end();line_index++)
                     newFile<<*line_index<<endl;
-                return newFile;
+                return;
             }
             vector<string>:: iterator line_index;
             fstream newFile;
             newFile.open(file_name, ios::out);
             if(!newFile)
-                return newFile;
+                return;
 
             for(line_index=lines.begin()+(line_number-1);line_index<lines.end();line_index++)
                 newFile<<*line_index<<endl;
-            return newFile;
+            newFile.close();
+            return;
 }
 
 textMatcher textFile:: searchLines(string pattern){
             int line_number;
             textMatcher matcher1(pattern, lines);
-            number_of_results = 0;
             for(line_number=0;line_number<line_count;line_number++){
                 if(matcher1.searchMatchingLine(lines[line_number])){
                     matcher1.setMatchedLines(line_number+1);
-                    number_of_results++;
                 }
                 
             }
