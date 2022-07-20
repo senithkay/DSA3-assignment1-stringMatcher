@@ -207,6 +207,18 @@ class textFile {
 
         //slice the file after a specific line number and name it(returns the opened file)
         fstream file_slice(string file_name,int line_number){
+            if(line_number<1 | line_number>line_count){
+                cout<<"ERROR: Line number out of range. Duplicating the original file."<<endl;
+                vector<string>:: iterator line_index;
+                fstream newFile;
+                newFile.open(file_name, ios::out);
+                if(!newFile)
+                    return newFile;
+
+                for(line_index=lines.begin();line_index<lines.end();line_index++)
+                    newFile<<*line_index<<endl;
+                return newFile;
+            }
             vector<string>:: iterator line_index;
             fstream newFile;
             newFile.open(file_name, ios::out);
@@ -235,7 +247,12 @@ class textFile {
         }
 
         //splits a line of strings into words and print them in a line
-        void split(string str){
+        void split(int line_number){
+            if(line_number<1 | line_number>line_count){
+                cout<<"ERROR: line number out of range"<<endl;
+                return;
+            }
+            string str = lines[line_number-1];
             string res = "";;
             if(str == "")
                 cout<<res;
@@ -259,32 +276,66 @@ class textFile {
 int main(){
     
     textFile t1("modules.txt");
-    int command = 10;
+    int command = 1;
     int subCommand = 0;
     string searchPattern;
     string filter;
     
-    while(command){
-        cout<<"Select an option from the menu below"<<endl;
-        cout<<"1. Find lines containing a string"<<endl;
-        cout<<"2. Desplay a specific line"<<endl;
-        cout<<"3. Slice the file from a given line number and save the result in a new file"<<endl;
-        cout<<"4. Split a line into words and print them"<<endl;  
+    while(command!=5){
+        cout<<"Select an option from the menu below."<<endl;
+        cout<<"1. Find lines containing a string."<<endl;
+        cout<<"2. Display a specific line."<<endl;
+        cout<<"3. Slice the file from a given line number and save the result in a new file."<<endl;
+        cout<<"4. Split a line into words and print them."<<endl;  
+        cout<<"5. Exit."<<endl;
+        cout<<"Your choice: ";
         cin>>command;
         switch (command) {
-        case 1:
-            
+        case 1:{
+            cout<<endl<<endl;
             cout<<"Enter the string you want to find: ";
             cin>>searchPattern;
             cout<<"Select a filter option from below"<<endl;
             cout<<"1. no filter"<<endl;
             cout<<"2. Module code only"<<endl;
             cout<<"3. Module name only"<<endl;
+            cout<<"Your choice: ";
             cin>>subCommand;
             textMatcher res1 = t1.searchLines(searchPattern);
             res1.printMatchedLines(subCommand);
             cout<<res1.getNumOfmatches()<<" matches found"<<endl;
-        }    
+            break;
+        }      
+
+
+        case 2:{
+            cout<<"Enter the line number you want to print: ";
+            cin>>subCommand;
+            cout<<"Line "<<subCommand<<": ";
+            t1.print_line(subCommand);
+            break;
+        }
+
+        case 3:{
+            cout<<"Enter a line number to divide the file: ";
+            cin>>subCommand;
+            string fileName;
+            cout<<"Enter a name for the new file: ";
+            cin>> fileName;
+            t1.file_slice(fileName,subCommand);
+            break;
+        }
+
+        case 4: {
+            cout<<"Enter the line number you want to split into words and print: ";
+            cin>>subCommand;
+            t1.split(subCommand);
+            break;
+        }
+        
+
+        }  
+        cout<<endl<<endl<<endl;  
     }
 
 
