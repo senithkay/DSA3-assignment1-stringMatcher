@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include<ios>
+#include<limits>
 
 
 using namespace std;
@@ -19,6 +21,7 @@ class textMatcher{
     int number_of_matches;
     vector<int> matched_lines;
     vector<string> &textLines;
+    fstream results_file;
     
     void create_bad_character();
 
@@ -37,11 +40,17 @@ class textMatcher{
         void setMatchedLines(int ln);
         vector<string> split(string str);//splits a line of strings into words and returns a vector containing them
 
+        //to print
         void printStringVector(vector<string> vec, int startingPos, int endPos);//prints a string vector when from a starting point 
                                                                                 //to a ending point
         void printStringVector(vector<string> vec, int startingPos);//prints a string vector when from a starting point
                                                                     //to the end of the vector.
         void printMatchedLines(int filter);//matched lines and filter out resultts.
+
+        //to save
+        void saveStringVector(vector<string> vec, int startingPos, int endPos);
+        void saveStringVector(vector<string> vec, int startingPos);
+        void saveMatchedLines(string fileName,int filter);
 };
 
 
@@ -83,8 +92,9 @@ int main(){
         switch (command) {
         case 1:{
             cout<<endl<<endl;
+            cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
             cout<<"Enter the string you want to find: ";
-            cin>>searchPattern;
+            getline(cin,searchPattern);
             cout<<"Select a filter option from below"<<endl;
             cout<<"1. no filter"<<endl;
             cout<<"2. Module code only"<<endl;
@@ -94,6 +104,19 @@ int main(){
             textMatcher res1 = t1.searchLines(searchPattern);
             res1.printMatchedLines(subCommand);
             cout<<res1.getNumOfmatches()<<" matches found"<<endl;
+            char c = 'x';
+            while(c!='y' && c!='n' && c!='Y' && c!= 'N'){
+                cout<<"Do you want to save results on a file? (y/n): ";
+                cin>>c;
+                if(c=='y' || c=='Y'){
+                    cout<<"Enter a name for the file: ";
+                    string name;
+                    cin>>name;
+                    res1.saveMatchedLines(name,subCommand);
+                    //cout<<"File saved."<<endl;
+                }
+            }
+            
             break;
         }      
 
@@ -233,7 +256,7 @@ vector<string> textMatcher:: split(string str){
             words.push_back(res);
             vector<string>::iterator i;
 }
-
+//print
 void textMatcher:: printStringVector(vector<string> vec, int startingPos, int endPos){
             vector<string>::iterator i;
             for (i=vec.begin()+startingPos;i<vec.begin()+ endPos+1;i++)
@@ -287,6 +310,67 @@ void textMatcher:: printMatchedLines(int filter){
                 
             }
 }
+
+
+//save
+
+void textMatcher:: saveStringVector(vector<string> vec, int startingPos, int endPos){
+            vector<string>::iterator i;
+            for (i=vec.begin()+startingPos;i<vec.begin()+ endPos+1;i++)
+                results_file<<*i<<" ";
+            results_file<<endl;
+}
+
+void textMatcher:: saveStringVector(vector<string> vec, int startingPos){
+            vector<string>::iterator i;
+            for (i=vec.begin()+startingPos;i<vec.end();i++)
+                    results_file<<*i<<" ";
+            results_file<<endl;
+}
+
+
+void textMatcher:: saveMatchedLines(string fileName,int filter){
+            results_file.open(fileName, ios::out);
+            if (filter==1){
+                vector<string>:: iterator i=textLines.begin();
+                vector<int>:: iterator j;
+                for(j= matched_lines.begin();j<matched_lines.end();j++){
+                    results_file<<*(i+*j-1)<<endl;
+                }
+            }
+            else if (filter == 2){
+                vector< vector<string> > results;
+                vector<string>:: iterator i=textLines.begin();
+                vector<int>:: iterator j;
+                for(j= matched_lines.begin();j<matched_lines.end();j++){
+                    results.push_back(split(*(i+*j-1)));
+                }
+               
+                vector< vector<string> > :: iterator k;
+                for(k=results.begin();k<results.end();k++)
+                    saveStringVector(*k,0,0);
+        
+                
+            }
+
+            else if (filter == 3){
+                vector< vector<string> > results;
+                vector<string>:: iterator i=textLines.begin();
+                vector<int>:: iterator j;
+                for(j= matched_lines.begin();j<matched_lines.end();j++){
+                    results.push_back(split(*(i+*j-1)));
+                }
+               
+                vector< vector<string> > :: iterator k;
+                for(k=results.begin();k<results.end();k++)
+                    saveStringVector(*k,1);
+        
+                
+            }
+            results_file.close();
+}
+
+
 
 void  textMatcher:: setMatchedLines(int ln){
             matched_lines.push_back(ln);
