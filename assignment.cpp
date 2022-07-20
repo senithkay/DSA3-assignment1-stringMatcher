@@ -57,6 +57,7 @@ class textMatcher{
                     }
                 }
                 if (j < 0){
+                    number_of_matches++;
                     return true;
                     if (shift_value + p_length < t_length){
                         if(isupper(text[j + p_length + 1]))
@@ -85,7 +86,7 @@ class textMatcher{
             create_bad_character();
         }
 
-        bool searchLine(string t){
+        bool searchMatchingLine(string t){
             text = t;
             t_length = t.length();
             return boyer_moore();
@@ -93,10 +94,6 @@ class textMatcher{
 
         int getNumOfmatches(){
             return number_of_matches;
-        }
-
-        void setNumOfMatches(int num){
-            number_of_matches = num;
         }
 
         void setMatchedLines(int ln){
@@ -136,15 +133,15 @@ class textMatcher{
             cout<<endl;
     }
 
-        void printMatchedLines(string filter){
-            if (filter=="no filter"){
+        void printMatchedLines(int filter){
+            if (filter==1){
                 vector<string>:: iterator i=textLines.begin();
                 vector<int>:: iterator j;
                 for(j= matched_lines.begin();j<matched_lines.end();j++){
                     cout<<*(i+*j-1)<<endl;
                 }
             }
-            else if (filter == "Module code"){
+            else if (filter == 2){
                 vector< vector<string> > results;
                 vector<string>:: iterator i=textLines.begin();
                 vector<int>:: iterator j;
@@ -159,7 +156,7 @@ class textMatcher{
                 
             }
 
-            else if (filter == "Module name"){
+            else if (filter == 3){
                 vector< vector<string> > results;
                 vector<string>:: iterator i=textLines.begin();
                 vector<int>:: iterator j;
@@ -228,33 +225,30 @@ class textFile {
             textMatcher matcher1(pattern, lines);
             number_of_results = 0;
             for(line_number=0;line_number<line_count;line_number++){
-                if(matcher1.searchLine(lines[line_number])){
+                if(matcher1.searchMatchingLine(lines[line_number])){
                     matcher1.setMatchedLines(line_number+1);
                     number_of_results++;
                 }
                 
             }
-            matcher1.setNumOfMatches(number_of_results);
             return matcher1;
         }
 
-        //splits a line of strings into words and returns a vector containing them
-        vector<string> split(string str){
-            vector<string> words;
+        //splits a line of strings into words and print them in a line
+        void split(string str){
             string res = "";;
             if(str == "")
-                return words;
+                cout<<res;
             for (char i: str){
         
                 if (i==' '){
-                    words.push_back(res);
+                    cout<<res<<", ";
                 res = "";
                 }
                 else
                     res += i;
             }
-            words.push_back(res);
-            vector<string>::iterator i;
+            cout<<res<<endl;
         }
 
 
@@ -265,10 +259,39 @@ class textFile {
 int main(){
     
     textFile t1("modules.txt");
+    int command = 10;
+    int subCommand = 0;
+    string searchPattern;
+    string filter;
+    
+    while(command){
+        cout<<"Select an option from the menu below"<<endl;
+        cout<<"1. Find lines containing a string"<<endl;
+        cout<<"2. Desplay a specific line"<<endl;
+        cout<<"3. Slice the file from a given line number and save the result in a new file"<<endl;
+        cout<<"4. Split a line into words and print them"<<endl;  
+        cin>>command;
+        switch (command) {
+        case 1:
+            
+            cout<<"Enter the string you want to find: ";
+            cin>>searchPattern;
+            cout<<"Select a filter option from below"<<endl;
+            cout<<"1. no filter"<<endl;
+            cout<<"2. Module code only"<<endl;
+            cout<<"3. Module name only"<<endl;
+            cin>>subCommand;
+            textMatcher res1 = t1.searchLines(searchPattern);
+            res1.printMatchedLines(subCommand);
+            cout<<res1.getNumOfmatches()<<" matches found"<<endl;
+        }    
+    }
 
 
 
+   /*
     textMatcher res1 = t1.searchLines("he entry");
     cout<<res1.getNumOfmatches()<<endl;
     res1.printMatchedLines("Module name");
+   */
 }
