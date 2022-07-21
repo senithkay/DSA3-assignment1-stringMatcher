@@ -272,7 +272,7 @@ vector<string> textMatcher:: split(string str){
                     res += i;
             }
             words.push_back(res);
-            vector<string>::iterator i;
+            return words;
 }
 //print
 void textMatcher:: printStringVector(vector<string> vec, int startingPos, int endPos){
