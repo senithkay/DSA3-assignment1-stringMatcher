@@ -1,4 +1,6 @@
 1. This program is written in C++. Use a C++ complier and run the file.
+   For windows, use string_matcher_windows.cpp
+   For linux, use string_matcher_linux.cpp
 
 2. Select an option from the menu
     1. to use the string macher. There is an option to filter results. 
