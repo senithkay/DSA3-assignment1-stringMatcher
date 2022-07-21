@@ -2,8 +2,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include<ios>
-#include<limits>
+#include <ios>
+#include <limits>
+#include <stdlib.h>
 
 
 using namespace std;
@@ -87,11 +88,11 @@ int main(){
         cout<<"5. Exit."<<endl;
         cout<<"Your choice: ";
         cin>>command;
+        system("cls");
         if(1>command || 5<command)
             cout<<"ERROR: "<<command<<" is not a valid input"<<endl;
         switch (command) {
         case 1:{
-            cout<<endl<<endl;
             cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
             cout<<"Enter the string you want to find: ";
             getline(cin,searchPattern);
@@ -101,6 +102,7 @@ int main(){
             cout<<"3. Module name only"<<endl;
             cout<<"Your choice: ";
             cin>>subCommand;
+            system("cls");
             textMatcher res1 = t1.searchLines(searchPattern);
             res1.printMatchedLines(subCommand);
             cout<<res1.getNumOfmatches()<<" matches found"<<endl;
@@ -113,7 +115,8 @@ int main(){
                     string name;
                     cin>>name;
                     res1.saveMatchedLines(name,subCommand);
-                    //cout<<"File saved."<<endl;
+                    cout<<"File saved. ";
+                    system("pause");
                 }
             }
             
@@ -126,6 +129,8 @@ int main(){
             cin>>subCommand;
             cout<<"Line "<<subCommand<<": ";
             t1.print_line(subCommand);
+            system("pause");
+            system("cls");
             break;
         }
 
@@ -136,6 +141,8 @@ int main(){
             cout<<"Enter a name for the new file: ";
             cin>> fileName;
             t1.file_slice(fileName,subCommand);
+            cout<<"File created. ";
+            system("pause");
             break;
         }
 
@@ -143,16 +150,11 @@ int main(){
             cout<<"Enter the line number you want to split into words and print: ";
             cin>>subCommand;
             t1.split(subCommand);
+            system("pause");
             break;
         }
-
-        case 5:{
-
         }
-        
-
-        }  
-        cout<<endl<<endl<<endl;  
+        system("cls");   
     }
 
 }
