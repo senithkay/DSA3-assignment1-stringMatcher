@@ -62,6 +62,7 @@ class textFile {
 
 
     public:
+        int getLineCount();
         textFile(string file_to_open);
         void print_line(int line_number);//prints the line when the line number is given as a parameter
         void file_slice(string file_name,int line_number);//slice the file after a specific line number and name it(returns the opened file)
@@ -127,6 +128,11 @@ int main(){
         case 2:{
             cout<<"Enter the line number you want to print: ";
             cin>>subCommand;
+            if(1>subCommand | subCommand> t1.getLineCount()){
+                cout<<"ERROR: Line number out of range. ";
+                system("pause");
+                break;
+            }
             cout<<"Line "<<subCommand<<": ";
             t1.print_line(subCommand);
             system("pause");
@@ -137,6 +143,11 @@ int main(){
         case 3:{
             cout<<"Enter a line number to divide the file: ";
             cin>>subCommand;
+            if(1>subCommand | subCommand> t1.getLineCount()){
+                cout<<"ERROR: Line number out of range. ";
+                system("pause");
+                break;
+            }
             string fileName;
             cout<<"Enter a name for the new file: ";
             cin>> fileName;
@@ -149,6 +160,11 @@ int main(){
         case 4: {
             cout<<"Enter the line number you want to split into words and print: ";
             cin>>subCommand;
+            if(1>subCommand | subCommand> t1.getLineCount()){
+                cout<<"ERROR: Line number out of range. ";
+                system("pause");
+                break;
+            }
             t1.split(subCommand);
             system("pause");
             break;
@@ -282,7 +298,7 @@ void textMatcher:: printMatchedLines(int filter){
                     cout<<*(i+*j-1)<<endl;
                 }
             }
-            else if (filter == 2){
+            else {
                 vector< vector<string> > results;
                 vector<string>:: iterator i=textLines.begin();
                 vector<int>:: iterator j;
@@ -292,25 +308,14 @@ void textMatcher:: printMatchedLines(int filter){
                
                 vector< vector<string> > :: iterator k;
                 for(k=results.begin();k<results.end();k++)
-                    printStringVector(*k,0,0);
-        
+                    if (filter == 2)
+                        printStringVector(*k,0,0);
+                    else if(filter==3)
+                        printStringVector(*k,1);
                 
             }
 
-            else if (filter == 3){
-                vector< vector<string> > results;
-                vector<string>:: iterator i=textLines.begin();
-                vector<int>:: iterator j;
-                for(j= matched_lines.begin();j<matched_lines.end();j++){
-                    results.push_back(split(*(i+*j-1)));
-                }
-               
-                vector< vector<string> > :: iterator k;
-                for(k=results.begin();k<results.end();k++)
-                    printStringVector(*k,1);
         
-                
-            }
 }
 
 
@@ -456,4 +461,8 @@ void textFile:: split(int line_number){
                     res += i;
             }
             cout<<res<<endl;
+}
+
+int textFile::getLineCount(){
+    return line_count;
 }
