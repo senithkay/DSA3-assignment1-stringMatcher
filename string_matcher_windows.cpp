@@ -56,7 +56,7 @@ class textMatcher{
 
 
 class textFile {
-    vector<string> lines;
+    vector<string> lines;//stores each line of the file 
     int line_count; // stores line count.
     string line; // stores a specific line temporarily.
 
@@ -202,11 +202,12 @@ bool textMatcher:: boyer_moore(){
             while (shift_value <= (t_length - p_length))
             {   
                 for (j = p_length - 1; j >= 0; j--){
+                    //only the pattern character is upper case
                     if(isupper(pattern[j]) && !isupper(text[shift_value + j])){
                         if (int(pattern[j]) +32 != int(text[shift_value + j]))
                             break;        
                     }
-
+                    //only the text character is uppercase
                     else if(!isupper(pattern[j]) && isupper(text[shift_value + j])){
                         if (int(pattern[j]) != int(text[shift_value + j])+32)
                             break;
@@ -216,12 +217,16 @@ bool textMatcher:: boyer_moore(){
                         break;
                     }
                 }
+                //if j<0, a match found
                 if (j < 0){
                     number_of_matches++;
                     return true;
+                    //if the total shift value is smaller than text length(to prevent text overflow)
                     if (shift_value + p_length < t_length){
+                        //considering character is uppercase
                         if(isupper(text[j + p_length + 1]))
                             shift_value += bad_c_table[int(text[j + p_length + 1])+32];
+                        //considering character is lowercase
                         else
                             shift_value += bad_c_table[int(text[shift_value+p_length])];
                 
@@ -229,7 +234,9 @@ bool textMatcher:: boyer_moore(){
                     else
                         shift_value++;
                 }
+                //match not found
                 else{
+                    //if the last character of the text window is uppercase
                     if(isupper(text[shift_value + (p_length - 1)]))
                         shift_value += bad_c_table[int(text[shift_value + (p_length - 1)])+32];
                     else
